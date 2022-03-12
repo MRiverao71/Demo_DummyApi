@@ -4,39 +4,57 @@
     <meta charset="utf-8" />
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <title>Demo de uso Dummy Api.</title>
+
+<!-- Hola!! Lo primero que quiero comentar es que, me gustar usar Bootstrat y JQuery, esto no quiere decir que no voy a
+     usar "Fetch" para nada.
+     Voy a comentar, casi, cada línea o por lo menos, las que considero son las importantes comentar para explicar como
+     es que esta funcionando esto.  -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    
 </head>
 <body>
 
-    <div class="container">
+    <div class="container">  <!-- Esta clase es de Bootstrap y permite entre otras cosas, que funcione que se vea bonito lo
+                                  que le pones dentro. =P  -->
         <div id="cards" class="row row-cols-1 row-cols-md-3 g-4 mt-3">
-
+                <!-- Dentro de esta división van a ir "Tarjetas" (componentes "cards" de bootstrap) rellenas con los datos
+                     que vamos a trae del DummyApi -->
         </div>
     </div>
 
+    <!-- Las siguientes líneas "carga" JQuery y Bootstrap, eso es... =)-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 
+    <!-- Ahora si, biene lo diverido!!!!-->
     <script>
-        $(document).ready(function () {
+        $(document).ready(function () { // <- JQuery, con esto estoy diciendo que, en cuanto se termine de cargar la pagina, es decir,
+                                        //    la parte HTML, ejecuta el código JS que viene a continuación.
     
-            const API_URL = 'https://dummyapi.io/data/v1';
+            const API_URL = 'https://dummyapi.io/data/v1'; // <- Pongo en una variable la, primera parte, de la URL de Dummy Api
 
-            fetch(API_URL + '/user?limit=10', {
-                method: 'GET',
-                headers: {
-                    "app-id": "6112dc7c3f812e0d9b6679dd",
-                }
+            fetch(API_URL + '/user?limit=10',  // <- Y aquí está el FETCH!! como primer parámetro requiere la URL, asi que uso la
+                                                  //  variable 'API_URL' y le agrego que "quiero 10 usuarios" = '/user?limit=10'
+            {   method: 'GET',  // <-Como segundo parámetro (empieza despues de la coma) estoy mandando un 'objeto' con dos valores, el
+                                  //  primero es el 'metodo' o tipo de llamada que vamos ha hacer a la API, en este caso GET.
+                headers: {      // <-AQUI VAN LOS HEADERS AQUI!!. El segundo valor es otro objeto que se llama "headers", dentro tiene
+                    "app-id": "6112dc7c3f812e0d9b6679dd", //  <-el "app-id" que pide esta API con su valor, como se ve aqui a lado <--
+                }                                           //  aqui puden ir muchos otro pares de llave:valor para diferenes cosas.
             })
-            .then(res => res.json())
-            .then(res=> {
+            .then(res => res.json())  // <-Esta parte del fetch es ya la parte de la recuperación de la respuesta del API y le estamos
+                                      //  indicando puntualmente, que la respuesta se requiere en un formato JSON.
+            .then(res=> {      // <-A partir de aquí, si la respuesta fue éxitosa, tenemos acceso a los datos enviados por el API
+                               //   por lo que podemos recuperarlos y ponerlos en la página
+                let data = res.data;  // <- Aquí estoy indicando que se guarden los datos enviados por el API en una variable 
+                                      //    llamada 'data'
+                var html = '';    // <- Declaro una variable llamada 'html', vacia, para ocuparla un poco mas adelante.
 
-                let data = res.data;
-                var html = '';
-                $.each(data, function (i, data) {
-                        html += `
+                $.each(data, function (i, data) {  // <- Este es un ciclo "each" de JQuery, esto permite recorrer la colección
+                                                   //    de objetos o 'arreglo', con datos que nos envío la API
+                              // <-- Lo que hago a continuación es, meter en la varible 'html' código HTML, este lo encierro
+                              //     en "comillas simples inversas(`)" eso me permite usar la sintaxis "${}" para recuperar datos.
+                        html += `       
                         <div class="col">
                             <div class="card h-100" style="width: 18rem";>
                             <img id="user_img" src=" ${data.picture} " class="card-img-top" alt="..." >
@@ -46,10 +64,13 @@
                                     <p class="card-text" id="user_msg"> El id para este usuario es <b>${data.id}</b> eso indica que la base de datos es, muy probablemente, Mongo.</p>
                                 </div>
                             </div>
-                        </div>
-                                    `;
+                        </div>`;
+                        // <- El código HTML que estoy metiendo arriba es "una columna de bootstrap, con una 'card' dentro", si te
+                        // fijas, estoy colocando la imagen, el titulo y el nombre del usario que envía la API con ${data.picture},
+                        //  ${data.title}  ${data.firstName} ${data.lastName}.
                 });
-                $("#cards").html(html);
+                $("#cards").html(html);  // <- Una vez que la variable 'html' se llena de los datos del API y código HTML, simplemente
+                                         //    lo agrego a el elemento HTML identificaco como "cards" y Listo!!! ya quedo!!
             })
         })
 
